@@ -21,20 +21,27 @@ def skaitymas():
 def plotas(xcord, ycord, count):
     color = np.random.choice(500, size=count)
     pl = plt.scatter(xcord,ycord,c=color,alpha=0.7)
-    plt.title('The graph for scatter map')
-    plt.ylabel('Y coord')
-    plt.xlabel('X coord')
+    #plt.title('The graph for scatter map')
+    #plt.ylabel('Y coord')
+    #plt.xlabel('X coord')
     return pl
 
-def kMeansClustering(clusterCount, X, Y, plotting):
+def kMeansClustering(clusterCount, X, Y):
     Data = {'x': X, 'y': Y}
     df = DataFrame(Data, columns=['x','y'])
     kMeans = KMeans(n_clusters=clusterCount).fit(df)
     centroids = kMeans.cluster_centers_
-    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=Counter(kMeans.labels_).values())
+    vals = Counter(kMeans.labels_).values()
+    fuk = list(vals)
+    for x in range(len(fuk)):
+        plotting = plt.scatter(centroids[x, 0], centroids[x,1], c='red', s=int(fuk[x]*12))
+
+    plt.title('The graph for scatter map')
+    plt.ylabel('Y coord')
+    plt.xlabel('X coord')
     return plotting
 
 x, y = skaitymas()
-plot = plotas(x,y, 97*3)
-plotas = kMeansClustering(5, x,y, plot)
+#plot = plotas(x,y, 97*3)
+plotas = kMeansClustering(10, x,y)
 plt.show()
