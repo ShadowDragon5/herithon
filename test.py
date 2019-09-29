@@ -6,6 +6,7 @@ from oauth2client.service_account import ServiceAccountCredentials
 import pprint
 from sklearn.cluster import KMeans
 from pandas import DataFrame
+from collections import Counter
 
 def skaitymas():
     scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
@@ -30,7 +31,7 @@ def kMeansClustering(clusterCount, X, Y, plotting):
     df = DataFrame(Data, columns=['x','y'])
     kMeans = KMeans(n_clusters=clusterCount).fit(df)
     centroids = kMeans.cluster_centers_
-    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=50)
+    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=Counter(kMeans.labels_).values())
     return plotting
 
 x, y = skaitymas()
