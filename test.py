@@ -31,7 +31,7 @@ def kMeansClustering(clusterCount, X, Y, plotting):
     df = DataFrame(Data, columns=['x','y'])
     kMeans = KMeans(n_clusters=clusterCount).fit(df)
     centroids = kMeans.cluster_centers_
-    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=Counter(kMeans.labels_).values())
+    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=list(x * 10 for x in Counter(kMeans.labels_).values()))
     return plotting
 
 x, y = skaitymas()
