@@ -1,21 +1,22 @@
 import matplotlib.pyplot as plt
-import matplotlib.tri as tri
-from scipy.interpolate import griddata
 import numpy as np
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
-import pprint
 from sklearn.cluster import KMeans
 from pandas import DataFrame
 from collections import Counter
 
 def skaitymas():
-    scope = ['https://spreadsheets.google.com/feeds','https://www.googleapis.com/auth/drive']
-    creds = ServiceAccountCredentials.from_json_keyfile_name('herithon_secret.json', scope)
+    scope = ['https://spreadsheets.google.com/feeds',
+            'https://www.googleapis.com/auth/drive']
+    creds = ServiceAccountCredentials.from_json_keyfile_name(
+                                                'herithon_secret.json', scope)
     client = gspread.authorize(creds)
     sheet = client.open('photo data herithon').sheet1
-    X = [int(x.value) for x in (sheet.range('D4:D100') + sheet.range('K4:K100') + sheet.range('R4:R100'))]
-    Y = [int(x.value) for x in (sheet.range('E4:E100') + sheet.range('L4:L100') + sheet.range('S4:S100'))]
+    X = [int(x.value) for x in (sheet.range('D4:D100') + sheet.range('K4:K100')
+                                + sheet.range('R4:R100'))]
+    Y = [int(x.value) for x in (sheet.range('E4:E100') + sheet.range('L4:L100')
+                                + sheet.range('S4:S100'))]
     return X, Y
 
 
@@ -26,15 +27,13 @@ def plotas(xcord, ycord, count):
     extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
 
     plt.clf()
-    plt.imshow(heatmap.T, extent=extent, origin='lower', interpolation="sinc", cmap="Greys")
-
-    #plt.scatter(xcord,ycord,c=color,alpha=.5)
+    plt.imshow(heatmap.T, extent=extent, origin='lower', interpolation="sinc",
+                                                                cmap="Greys")
 
     plt.title('Photo distribution')
-    #plt.ylabel('Y coord')
-    #plt.xlabel('X coord')
     plt.xticks([])
     plt.yticks([])
+
 
 def kMeansClustering(clusterCount, X, Y):
     Data = {'x': X, 'y': Y}
