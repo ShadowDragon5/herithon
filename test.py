@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
+import matplotlib.tri as tri
+from scipy.interpolate import griddata
 import numpy as np
-import random
 import gspread
 from oauth2client.service_account import ServiceAccountCredentials
 import pprint
@@ -20,21 +21,35 @@ def skaitymas():
 
 def plotas(xcord, ycord, count):
     color = np.random.choice(500, size=count)
-    pl = plt.scatter(xcord,ycord,c=color,alpha=0.7)
-    plt.title('The graph for scatter map')
-    plt.ylabel('Y coord')
-    plt.xlabel('X coord')
-    return pl
 
-def kMeansClustering(clusterCount, X, Y, plotting):
+    heatmap, xedges, yedges = np.histogram2d(xcord, ycord, bins=10)
+    extent = [xedges[0], xedges[-1], yedges[0], yedges[-1]]
+
+    plt.clf()
+    plt.imshow(heatmap.T, extent=extent, origin='lower', interpolation="sinc", cmap="Greys")
+
+    #plt.scatter(xcord,ycord,c=color,alpha=.5)
+
+    plt.title('Photo distribution')
+    #plt.ylabel('Y coord')
+    #plt.xlabel('X coord')
+    plt.xticks([])
+    plt.yticks([])
+
+def kMeansClustering(clusterCount, X, Y):
     Data = {'x': X, 'y': Y}
     df = DataFrame(Data, columns=['x','y'])
     kMeans = KMeans(n_clusters=clusterCount).fit(df)
     centroids = kMeans.cluster_centers_
-    plotting = plt.scatter(centroids[:, 0], centroids[:,1], c='red', s=list(x * 10 for x in Counter(kMeans.labels_).values()))
-    return plotting
+    x = centroids[:, 0]
+    y = centroids[:,1]
+    z = list(x**2 for x in Counter(kMeans.labels_).values())
+
+    #plt.scatter(X, Y, c=kMeans.labels_.astype(float))
+    plt.scatter(x, y, c='red', s=z, alpha=.5)
 
 x, y = skaitymas()
-plot = plotas(x,y, 97*3)
-plotas = kMeansClustering(5, x,y, plot)
-plt.show()
+plotas(x,y, 97*3)
+#kMeansClustering(5, x,y)
+plt.tight_layout()
+plt.savefig("phDist_final.png", dpi=500, quality=100)
